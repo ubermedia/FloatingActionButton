@@ -52,17 +52,17 @@ public class FloatingActionButton extends View {
         super(context, attrs, defStyleAttr);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FloatingActionButton);
-        mColor = a.getColor(R.styleable.FloatingActionButton_color, Color.WHITE);
+        mColor = a.getColor(R.styleable.FloatingActionButton_android_color, Color.WHITE);
         mButtonPaint.setStyle(Paint.Style.FILL);
         mButtonPaint.setColor(mColor);
         float radius, dx, dy;
-        radius = a.getFloat(R.styleable.FloatingActionButton_shadowRadius, 10.0f);
-        dx = a.getFloat(R.styleable.FloatingActionButton_shadowDx, 0.0f);
-        dy = a.getFloat(R.styleable.FloatingActionButton_shadowDy, 3.5f);
-        int color = a.getInteger(R.styleable.FloatingActionButton_shadowColor, Color.argb(100, 0, 0, 0));
+        radius = a.getFloat(R.styleable.FloatingActionButton_android_shadowRadius, 10.0f);
+        dx = a.getFloat(R.styleable.FloatingActionButton_android_shadowDx, 0.0f);
+        dy = a.getFloat(R.styleable.FloatingActionButton_android_shadowDy, 3.5f);
+        int color = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(100, 0, 0, 0));
         mButtonPaint.setShadowLayer(radius, dx, dy, color);
 
-        Drawable drawable = a.getDrawable(R.styleable.FloatingActionButton_drawable);
+        Drawable drawable = a.getDrawable(R.styleable.FloatingActionButton_android_drawable);
         if (null != drawable) {
             mBitmap = ((BitmapDrawable) drawable).getBitmap();
         }
