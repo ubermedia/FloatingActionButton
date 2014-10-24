@@ -65,7 +65,7 @@ public class FloatingActionButton extends View {
         radius = a.getFloat(R.styleable.FloatingActionButton_android_shadowRadius, defaultShadowRadius);
         dx = a.getFloat(R.styleable.FloatingActionButton_android_shadowDx, defaultShadowDx);
         dy = a.getFloat(R.styleable.FloatingActionButton_android_shadowDy, defaultShadowDy);
-        int color = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.BLACK);
+        int color = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(100, 0, 0, 0));
         mButtonPaint.setShadowLayer(radius, dx, dy, color);
 
         Drawable drawable = a.getDrawable(R.styleable.FloatingActionButton_android_drawable);
