@@ -1,6 +1,7 @@
 package com.faizmalkani.floatingactionbutton;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -51,15 +52,20 @@ public class FloatingActionButton extends View {
     public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FloatingActionButton);
+        final Resources res = getResources();
+        final float defaultShadowRadius = res.getDimension(R.dimen.fab_default_shadowRadius);
+        final float defaultShadowDx = res.getDimension(R.dimen.fab_default_shadowDx);
+        final float defaultShadowDy = res.getDimension(R.dimen.fab_default_shadowDy);
+
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, defStyleAttr ,0);
         mColor = a.getColor(R.styleable.FloatingActionButton_android_color, Color.WHITE);
         mButtonPaint.setStyle(Paint.Style.FILL);
         mButtonPaint.setColor(mColor);
         float radius, dx, dy;
-        radius = a.getFloat(R.styleable.FloatingActionButton_android_shadowRadius, 10.0f);
-        dx = a.getFloat(R.styleable.FloatingActionButton_android_shadowDx, 0.0f);
-        dy = a.getFloat(R.styleable.FloatingActionButton_android_shadowDy, 3.5f);
-        int color = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(100, 0, 0, 0));
+        radius = a.getFloat(R.styleable.FloatingActionButton_android_shadowRadius, defaultShadowRadius);
+        dx = a.getFloat(R.styleable.FloatingActionButton_android_shadowDx, defaultShadowDx);
+        dy = a.getFloat(R.styleable.FloatingActionButton_android_shadowDy, defaultShadowDy);
+        int color = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.BLACK);
         mButtonPaint.setShadowLayer(radius, dx, dy, color);
 
         Drawable drawable = a.getDrawable(R.styleable.FloatingActionButton_android_drawable);

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fab_default_shadowRadius">6dp</dimen>
+    <dimen name="fab_default_shadowDx">0dp</dimen>
+    <dimen name="fab_default_shadowDy">2dp</dimen>
+</resources>
