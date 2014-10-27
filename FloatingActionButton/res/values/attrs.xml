@@ -4,10 +4,9 @@
     <declare-styleable name="FloatingActionButton">
         <attr name="android:drawable"/>
         <attr name="android:color"/>
-        <attr name="android:shadowRadius"/>
-        <attr name="android:shadowDx"/>
-        <attr name="android:shadowDy"/>
         <attr name="android:shadowColor"/>
+        <attr name="fab_elevation" format="dimension"/>
+        <attr name="fab_elevationPressed" format="dimension"/>
     </declare-styleable>
 
 </resources>

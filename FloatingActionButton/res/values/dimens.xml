@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="fab_default_shadowRadius">5dp</dimen>
-    <dimen name="fab_default_shadowDx">0dp</dimen>
-    <dimen name="fab_default_shadowDy">2dp</dimen>
+    <dimen name="fab_default_defaultElevation">7.0dp</dimen>
+    <dimen name="fab_default_defaultElevationPressed">3.0dp</dimen>
 </resources>

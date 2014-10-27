@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,6 +17,7 @@ import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -26,10 +28,17 @@ import com.nineoldandroids.view.ViewHelper;
 
 public class FloatingActionButton extends View {
 
+    private static final int Z_TRANSLATION_DURATION = 100;
+    private static final float SHADOW_COEF_NORMAL = 0.9f;
+    private static final float SHADOW_COEF_PRESSED = 0.7f;
+
     private final Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
     private final Paint mButtonPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mDrawablePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-	private final float shadowRadius, dx, dy;
+    private final float shadowRadius, dx, dy;
+    private final int shadowColor;
+    private final float elevation;
+    private final float pressedElevation;
     private Bitmap mBitmap;
     private int mColor;
     private boolean mHidden = false;
@@ -55,19 +64,34 @@ public class FloatingActionButton extends View {
         super(context, attrs, defStyleAttr);
 
         final Resources res = getResources();
-        final float defaultShadowRadius = res.getDimension(R.dimen.fab_default_shadowRadius);
-        final float defaultShadowDx = res.getDimension(R.dimen.fab_default_shadowDx);
-        final float defaultShadowDy = res.getDimension(R.dimen.fab_default_shadowDy);
+        final float defaultElevation = res.getDimension(R.dimen.fab_default_defaultElevation);
+        final float defaultElevationPressed = res.getDimension(R.dimen.fab_default_defaultElevationPressed);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, defStyleAttr ,0);
         mColor = a.getColor(R.styleable.FloatingActionButton_android_color, Color.WHITE);
         mButtonPaint.setStyle(Paint.Style.FILL);
         mButtonPaint.setColor(mColor);
-	    shadowRadius = a.getFloat(R.styleable.FloatingActionButton_android_shadowRadius, defaultShadowRadius);
-        dx = a.getFloat(R.styleable.FloatingActionButton_android_shadowDx, defaultShadowDx);
-        dy = a.getFloat(R.styleable.FloatingActionButton_android_shadowDy, defaultShadowDy);
-        int color = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(100, 0, 0, 0));
-        mButtonPaint.setShadowLayer(shadowRadius, dx, dy, color);
+        elevation = a.getDimension(R.styleable.FloatingActionButton_fab_elevation, defaultElevation);
+        pressedElevation = a.getDimension(R.styleable.FloatingActionButton_fab_elevationPressed, defaultElevationPressed);
+
+        shadowColor = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(110, 0, 0, 0));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
+            shadowRadius = elevation;
+            dx = elevation * 0.15f;
+            dy = elevation * 0.3f;
+            mButtonPaint.setShadowLayer(SHADOW_COEF_NORMAL * elevation, dx, dy, shadowColor);
+        } else {
+            shadowRadius = 0;
+            dx = dy = 0.0f;
+            setElevation(elevation);
+            setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setOval(0, 0, view.getWidth(), view.getHeight());
+                }
+            });
+            setClipToOutline(true);
+        }
 
         Drawable drawable = a.getDrawable(R.styleable.FloatingActionButton_android_drawable);
         if (null != drawable) {
@@ -107,7 +131,7 @@ public class FloatingActionButton extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-	    float radius = (float) (getWidth() / 2) -  shadowRadius /*- Math.max(dx, dy)*/;
+        float radius = (float) (getWidth() / 2) - shadowRadius /*- Math.max(dx, dy)*/;
         canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius, mButtonPaint);
         if (null != mBitmap) {
             canvas.drawBitmap(mBitmap, (getWidth() - mBitmap.getWidth()) / 2,
@@ -136,6 +160,21 @@ public class FloatingActionButton extends View {
             color = darkenColor(mColor);
         }
         mButtonPaint.setColor(color);
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
+                mButtonPaint.setShadowLayer(SHADOW_COEF_PRESSED * elevation, dx, SHADOW_COEF_PRESSED * dy, shadowColor);
+            } else {
+                animate().translationZ(pressedElevation - elevation).setDuration(Z_TRANSLATION_DURATION);
+            }
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
+                mButtonPaint.setShadowLayer(SHADOW_COEF_NORMAL * elevation, dx, SHADOW_COEF_NORMAL * dy, shadowColor);
+            } else {
+                animate().translationZ(0).setDuration(Z_TRANSLATION_DURATION);
+            }
+        }
+
         invalidate();
         return super.onTouchEvent(event);
     }
