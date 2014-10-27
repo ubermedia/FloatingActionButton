@@ -152,9 +152,9 @@ public class FloatingActionButton extends View {
         }
     }
 
-    public void listenTo(AbsListView listView) {
+    public void listenTo(AbsListView listView, boolean downToHide) {
         if (null != listView) {
-            listView.setOnScrollListener(new DirectionScrollListener(this));
+            listView.setOnScrollListener(new DirectionScrollListener(this, downToHide));
         }
     }
 }

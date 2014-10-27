@@ -22,16 +22,18 @@ import android.widget.AbsListView;
 /**
  * Created by Stéphane on 09/07/2014.
  */
-class DirectionScrollListener implements AbsListView.OnScrollListener {
+public class DirectionScrollListener implements AbsListView.OnScrollListener {
 
     private static final int DIRECTION_CHANGE_THRESHOLD = 1;
-    private final FloatingActionButton mFloatingActionButton;
+	private final FloatingActionButton mFloatingActionButton;
+	private final boolean downToHide;
     private int mPrevPosition;
     private int mPrevTop;
     private boolean mUpdated;
 
-    DirectionScrollListener(FloatingActionButton floatingActionButton) {
-        mFloatingActionButton = floatingActionButton;
+    protected DirectionScrollListener(FloatingActionButton floatingActionButton, boolean downToHide) {
+        this.mFloatingActionButton = floatingActionButton;
+        this.downToHide = downToHide;
     }
 
     @Override
@@ -51,11 +53,15 @@ class DirectionScrollListener implements AbsListView.OnScrollListener {
             goingDown = firstVisibleItem > mPrevPosition;
         }
         if (changed && mUpdated) {
-            mFloatingActionButton.hide(goingDown);
+            goingDown(goingDown);
         }
         mPrevPosition = firstVisibleItem;
         mPrevTop = firstViewTop;
         mUpdated = true;
+    }
+
+    protected void goingDown(boolean goingDown) {
+        mFloatingActionButton.hide(!downToHide ^ goingDown);
     }
 
     @Override
