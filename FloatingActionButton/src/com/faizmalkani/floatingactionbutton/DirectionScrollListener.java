@@ -31,7 +31,7 @@ public class DirectionScrollListener implements AbsListView.OnScrollListener {
     private int mPrevTop;
     private boolean mUpdated;
 
-    protected DirectionScrollListener(FloatingActionButton floatingActionButton, boolean downToHide) {
+    public DirectionScrollListener(FloatingActionButton floatingActionButton, boolean downToHide) {
         this.mFloatingActionButton = floatingActionButton;
         this.downToHide = downToHide;
     }
@@ -43,25 +43,23 @@ public class DirectionScrollListener implements AbsListView.OnScrollListener {
         if (topChild != null) {
             firstViewTop = topChild.getTop();
         }
-        boolean goingDown;
-        boolean changed = true;
         if (mPrevPosition == firstVisibleItem) {
-            final int topDelta = mPrevTop - firstViewTop;
-            goingDown = firstViewTop < mPrevTop;
-            changed = Math.abs(topDelta) > DIRECTION_CHANGE_THRESHOLD;
+            onScrolled(firstViewTop - mPrevTop);
+        } else if (firstVisibleItem > mPrevPosition) {
+            onScrolled(-DIRECTION_CHANGE_THRESHOLD - 1);
         } else {
-            goingDown = firstVisibleItem > mPrevPosition;
-        }
-        if (changed && mUpdated) {
-            goingDown(goingDown);
+            onScrolled(DIRECTION_CHANGE_THRESHOLD + 1);
         }
         mPrevPosition = firstVisibleItem;
         mPrevTop = firstViewTop;
-        mUpdated = true;
     }
 
-    protected void goingDown(boolean goingDown) {
-        mFloatingActionButton.hide(!downToHide ^ goingDown);
+    public void onScrolled(int topDelta) {
+        if (Math.abs(topDelta) > DIRECTION_CHANGE_THRESHOLD && mUpdated) {
+            boolean goingDown = 0 > topDelta;
+            mFloatingActionButton.hide(!downToHide ^ goingDown);
+        }
+        mUpdated = true;
     }
 
     @Override
