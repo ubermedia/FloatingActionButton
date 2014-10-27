@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -28,6 +29,7 @@ public class FloatingActionButton extends View {
     private final Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
     private final Paint mButtonPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mDrawablePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	private final float shadowRadius, dx, dy;
     private Bitmap mBitmap;
     private int mColor;
     private boolean mHidden = false;
@@ -61,12 +63,11 @@ public class FloatingActionButton extends View {
         mColor = a.getColor(R.styleable.FloatingActionButton_android_color, Color.WHITE);
         mButtonPaint.setStyle(Paint.Style.FILL);
         mButtonPaint.setColor(mColor);
-        float radius, dx, dy;
-        radius = a.getFloat(R.styleable.FloatingActionButton_android_shadowRadius, defaultShadowRadius);
+	    shadowRadius = a.getFloat(R.styleable.FloatingActionButton_android_shadowRadius, defaultShadowRadius);
         dx = a.getFloat(R.styleable.FloatingActionButton_android_shadowDx, defaultShadowDx);
         dy = a.getFloat(R.styleable.FloatingActionButton_android_shadowDy, defaultShadowDy);
         int color = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(100, 0, 0, 0));
-        mButtonPaint.setShadowLayer(radius, dx, dy, color);
+        mButtonPaint.setShadowLayer(shadowRadius, dx, dy, color);
 
         Drawable drawable = a.getDrawable(R.styleable.FloatingActionButton_android_drawable);
         if (null != drawable) {
@@ -106,7 +107,8 @@ public class FloatingActionButton extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawCircle(getWidth() / 2, getHeight() / 2, (float) (getWidth() / 2.6), mButtonPaint);
+	    float radius = (float) (getWidth() / 2) -  shadowRadius /*- Math.max(dx, dy)*/;
+        canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius, mButtonPaint);
         if (null != mBitmap) {
             canvas.drawBitmap(mBitmap, (getWidth() - mBitmap.getWidth()) / 2,
                     (getHeight() - mBitmap.getHeight()) / 2, mDrawablePaint);
@@ -126,7 +128,7 @@ public class FloatingActionButton extends View {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         int color;
         if (event.getAction() == MotionEvent.ACTION_UP) {
             color = mColor;

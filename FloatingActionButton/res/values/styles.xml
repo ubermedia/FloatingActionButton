@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dimensions according to the Material guidelines http://www.google.com/design/spec/patterns/promoted-actions.html#promoted-actions-floating-action-button  -->
+    <style name="FABLarge">
+        <item name="android:layout_width">66dip</item>
+        <item name="android:layout_height">66dip</item>
+        <item name="android:layout_marginBottom">11dp</item>
+        <item name="android:layout_marginRight">11dp</item>
+        <item name="android:shadowRadius">10.0</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">4.0</item>
+    </style>
+
+    <!-- Dimensions according to the Material guidelines http://www.google.com/design/spec/patterns/promoted-actions.html#promoted-actions-floating-action-button  -->
+    <style name="FABMedium">
+        <item name="android:layout_width">49dip</item>
+        <item name="android:layout_height">49dip</item>
+        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:layout_marginRight">12dp</item>
+        <item name="android:shadowRadius">8.0</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">3.5</item>
+    </style>
+</resources>
