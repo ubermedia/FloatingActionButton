@@ -29,7 +29,7 @@ public class MainActivity extends ActionBarActivity {
         ListView listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.list_item, getResources().getStringArray(R.array.planets_array)));
-        mFab.listenTo(listView, true);
+        mFab.listenTo(listView);
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
     }
