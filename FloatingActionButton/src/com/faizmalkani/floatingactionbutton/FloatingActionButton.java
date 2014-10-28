@@ -88,8 +88,8 @@ public class FloatingActionButton extends View {
             dy = elevation * 0.3f;
             mButtonPaint.setShadowLayer(SHADOW_COEF_NORMAL * elevation, dx, dy, shadowColor);
         } else {
-            hideInterpolator = AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_linear_in);
-            showInterpolator = AnimationUtils.loadInterpolator(context, android.R.interpolator.linear_out_slow_in);
+	        //showInterpolator = hideInterpolator = AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_linear_in);
+	        hideInterpolator = showInterpolator = AnimationUtils.loadInterpolator(context, android.R.interpolator.linear_out_slow_in);
             shadowRadius = 0;
             dx = dy = 0.0f;
             setElevation(elevation);
