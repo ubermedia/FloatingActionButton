@@ -215,11 +215,11 @@ public class FloatingActionButton extends View {
         return mHidden;
     }
 
-    public TimeInterpolator getShowInterpolator() {
+    public Interpolator getShowInterpolator() {
         return showInterpolator;
     }
 
-    public TimeInterpolator getHideInterpolator() {
+    public Interpolator getHideInterpolator() {
         return hideInterpolator;
     }
 
