@@ -1,5 +1,6 @@
 package com.faizmalkani.floatingactionbutton;
 
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 
@@ -32,7 +34,8 @@ public class FloatingActionButton extends View {
     private static final float SHADOW_COEF_NORMAL = 0.9f;
     private static final float SHADOW_COEF_PRESSED = 0.7f;
 
-    private final Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
+    private final Interpolator hideInterpolator;
+	private final Interpolator showInterpolator;
     private final Paint mButtonPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mDrawablePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final float shadowRadius, dx, dy;
@@ -75,12 +78,15 @@ public class FloatingActionButton extends View {
         pressedElevation = a.getDimension(R.styleable.FloatingActionButton_fab_elevationPressed, defaultElevationPressed);
 
         shadowColor = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(110, 0, 0, 0));
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            hideInterpolator = showInterpolator = new AccelerateDecelerateInterpolator();
             shadowRadius = elevation;
             dx = elevation * 0.15f;
             dy = elevation * 0.3f;
             mButtonPaint.setShadowLayer(SHADOW_COEF_NORMAL * elevation, dx, dy, shadowColor);
         } else {
+            hideInterpolator = AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_linear_in);
+            showInterpolator = AnimationUtils.loadInterpolator(context, android.R.interpolator.linear_out_slow_in);
             shadowRadius = 0;
             dx = dy = 0.0f;
             setElevation(elevation);
@@ -188,17 +194,29 @@ public class FloatingActionButton extends View {
 
             // Animate the FAB to it's new Y position
             ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : mYDisplayed).setDuration(500);
-            animator.setInterpolator(mInterpolator);
+            animator.setInterpolator(hide ? hideInterpolator : showInterpolator);
             animator.start();
 
-	        return true;
+            return true;
         }
-	    return false;
+        return false;
     }
 
     public void listenTo(AbsListView listView) {
         if (null != listView) {
             listView.setOnScrollListener(new DirectionScrollListener(this, !listView.isStackFromBottom()));
         }
+    }
+
+    public boolean isHidden() {
+        return mHidden;
+    }
+
+    public TimeInterpolator getShowInterpolator() {
+        return showInterpolator;
+    }
+
+    public TimeInterpolator getHideInterpolator() {
+        return hideInterpolator;
     }
 }
