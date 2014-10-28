@@ -67,8 +67,8 @@ public class FloatingActionButton extends View {
         super(context, attrs, defStyleAttr);
 
         final Resources res = getResources();
-        final float defaultElevation = res.getDimension(R.dimen.fab_default_defaultElevation);
-        final float defaultElevationPressed = res.getDimension(R.dimen.fab_default_defaultElevationPressed);
+        final float defaultElevation = res.getDimension(R.dimen.fab_default_elevation);
+        final float defaultElevationPressed = res.getDimension(R.dimen.fab_default_elevationPressed);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, defStyleAttr ,0);
         mColor = a.getColor(R.styleable.FloatingActionButton_android_color, Color.WHITE);

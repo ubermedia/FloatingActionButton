@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="fab_default_defaultElevation">7.0dp</dimen>
-    <dimen name="fab_default_defaultElevationPressed">3.0dp</dimen>
+    <dimen name="fab_default_elevation">7.0dp</dimen>
+    <dimen name="fab_default_elevationPressed">3.0dp</dimen>
 </resources>

@@ -6,8 +6,8 @@
         <item name="android:layout_height">66dip</item>
         <item name="android:layout_marginBottom">11dp</item>
         <item name="android:layout_marginRight">11dp</item>
-        <item name="fab_elevation">@dimen/fab_default_defaultElevation</item>
-        <item name="fab_elevationPressed">@dimen/fab_default_defaultElevationPressed</item>
+        <item name="fab_elevation">@dimen/fab_default_elevation</item>
+        <item name="fab_elevationPressed">@dimen/fab_default_elevationPressed</item>
     </style>
 
     <!-- Dimensions according to the Material guidelines http://www.google.com/design/spec/patterns/promoted-actions.html#promoted-actions-floating-action-button  -->
@@ -16,7 +16,7 @@
         <item name="android:layout_height">49dip</item>
         <item name="android:layout_marginBottom">12dp</item>
         <item name="android:layout_marginRight">12dp</item>
-        <item name="fab_elevation">@dimen/fab_default_defaultElevation</item>
-        <item name="fab_elevationPressed">@dimen/fab_default_defaultElevationPressed</item>
+        <item name="fab_elevation">@dimen/fab_default_elevation</item>
+        <item name="fab_elevationPressed">@dimen/fab_default_elevationPressed</item>
     </style>
 </resources>
