@@ -42,6 +42,7 @@ public class FloatingActionButton extends View {
     private final int shadowColor;
     private final float elevation;
     private final float pressedElevation;
+	private final int duration;
     private Bitmap mBitmap;
     private int mColor;
     private boolean mHidden = false;
@@ -69,6 +70,7 @@ public class FloatingActionButton extends View {
         final Resources res = getResources();
         final float defaultElevation = res.getDimension(R.dimen.fab_default_elevation);
         final float defaultElevationPressed = res.getDimension(R.dimen.fab_default_elevationPressed);
+	    final int defaultDuration = res.getInteger(R.integer.fab_default_duration);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, defStyleAttr ,0);
         mColor = a.getColor(R.styleable.FloatingActionButton_android_color, Color.WHITE);
@@ -76,6 +78,7 @@ public class FloatingActionButton extends View {
         mButtonPaint.setColor(mColor);
         elevation = a.getDimension(R.styleable.FloatingActionButton_fab_elevation, defaultElevation);
         pressedElevation = a.getDimension(R.styleable.FloatingActionButton_fab_elevationPressed, defaultElevationPressed);
+        duration = a.getInteger(R.styleable.FloatingActionButton_fab_duration, defaultDuration);
 
         shadowColor = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(110, 0, 0, 0));
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -193,7 +196,7 @@ public class FloatingActionButton extends View {
             mHidden = hide;
 
             // Animate the FAB to it's new Y position
-            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : mYDisplayed).setDuration(500);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : mYDisplayed).setDuration(duration);
             animator.setInterpolator(hide ? hideInterpolator : showInterpolator);
             animator.start();
 
@@ -218,5 +221,9 @@ public class FloatingActionButton extends View {
 
     public TimeInterpolator getHideInterpolator() {
         return hideInterpolator;
+    }
+
+    public int getShowHideDuration() {
+        return duration;
     }
 }
