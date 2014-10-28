@@ -57,9 +57,15 @@ public class DirectionScrollListener implements AbsListView.OnScrollListener {
     public void onScrolled(int topDelta) {
         if (Math.abs(topDelta) > DIRECTION_CHANGE_THRESHOLD && mUpdated) {
             boolean goingDown = 0 > topDelta;
-            mFloatingActionButton.hide(!downToHide ^ goingDown);
+            boolean hide = !downToHide ^ goingDown;
+            if (mFloatingActionButton.hide(hide)) {
+                onShowTriggered(!hide);
+            }
         }
         mUpdated = true;
+    }
+
+    protected void onShowTriggered(boolean showing) {
     }
 
     @Override

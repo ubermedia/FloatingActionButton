@@ -179,7 +179,7 @@ public class FloatingActionButton extends View {
         return super.onTouchEvent(event);
     }
 
-    public void hide(boolean hide) {
+    public boolean hide(boolean hide) {
         // If the hidden state is being updated
         if (mHidden != hide) {
 
@@ -190,7 +190,10 @@ public class FloatingActionButton extends View {
             ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : mYDisplayed).setDuration(500);
             animator.setInterpolator(mInterpolator);
             animator.start();
+
+	        return true;
         }
+	    return false;
     }
 
     public void listenTo(AbsListView listView) {
