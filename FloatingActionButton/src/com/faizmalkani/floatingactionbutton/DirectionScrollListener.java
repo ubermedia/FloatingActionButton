@@ -27,8 +27,8 @@ import android.widget.AbsListView;
 public class DirectionScrollListener implements AbsListView.OnScrollListener {
 
     private final int DIRECTION_CHANGE_THRESHOLD;
-	private final FloatingActionButton mFloatingActionButton;
-	private final boolean downToHide;
+    private final FloatingActionButton mFloatingActionButton;
+    private final boolean downToHide;
     private int mPrevPosition;
     private int mPrevTop;
     private boolean mUpdated;
@@ -60,15 +60,13 @@ public class DirectionScrollListener implements AbsListView.OnScrollListener {
     public void onScrolled(int topDelta) {
         if (Math.abs(topDelta) > DIRECTION_CHANGE_THRESHOLD && mUpdated) {
             boolean goingDown = 0 > topDelta;
-            boolean hide = !downToHide ^ goingDown;
-            if (mFloatingActionButton.hide(hide)) {
-                onShowTriggered(!hide);
-            }
+            hideActionButton(!downToHide ^ goingDown);
         }
         mUpdated = true;
     }
 
-    protected void onShowTriggered(boolean showing) {
+    protected boolean hideActionButton(boolean hide) {
+        return mFloatingActionButton.hide(hide);
     }
 
     @Override
