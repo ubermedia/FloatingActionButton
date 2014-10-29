@@ -81,7 +81,7 @@ public class FloatingActionButton extends View {
         duration = a.getInteger(R.styleable.FloatingActionButton_fab_duration, defaultDuration);
 
         shadowColor = a.getInteger(R.styleable.FloatingActionButton_android_shadowColor, Color.argb(110, 0, 0, 0));
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || isInEditMode()) {
             hideInterpolator = showInterpolator = new AccelerateDecelerateInterpolator();
             shadowRadius = elevation;
             dx = elevation * 0.15f;
