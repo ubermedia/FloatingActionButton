@@ -16,6 +16,7 @@
 
 package com.faizmalkani.floatingactionbutton;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AbsListView;
@@ -32,7 +33,7 @@ public class DirectionScrollListener implements AbsListView.OnScrollListener {
     private int mPrevTop;
     private boolean mUpdated;
 
-    public DirectionScrollListener(FloatingActionButton floatingActionButton, boolean downToHide) {
+    public DirectionScrollListener(@NonNull FloatingActionButton floatingActionButton, boolean downToHide) {
         this.mFloatingActionButton = floatingActionButton;
         this.downToHide = downToHide;
         DIRECTION_CHANGE_THRESHOLD = ViewConfiguration.get(floatingActionButton.getContext()).getScaledOverflingDistance();
