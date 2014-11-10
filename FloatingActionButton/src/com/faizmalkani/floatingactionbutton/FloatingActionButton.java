@@ -228,10 +228,14 @@ public class FloatingActionButton extends View {
 
         // Store the FAB button's displayed Y position if we are not already aware of it
         if (mYDisplayed == -1) {
-            if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
-                mYDisplayed = getHeight() + margin;
+            if (mHidden) {
+                if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
+                    mYDisplayed = getHeight() + margin;
+                } else {
+                    mYDisplayed = mYHidden - getHeight() - margin;
+                }
             } else {
-                mYDisplayed = mYHidden - getHeight() - margin;
+                mYDisplayed = ViewHelper.getY(this);
             }
 
             if (DEBUG) Log.d(LOG_TAG, "update mYDisplayed ("+(mHidden?"hidden":"shown")+") = "+mYDisplayed+ " is at "+ViewHelper.getY(this)+" height = "+getHeight()+ " padding="+getPaddingBottom());
