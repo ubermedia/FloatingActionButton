@@ -1,6 +1,5 @@
 package com.faizmalkani.floatingactionbutton;
 
-import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -29,9 +28,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -56,7 +52,8 @@ public class FloatingActionButton extends View {
     private final float pressedElevation;
     private final int duration;
     private final int gravity;
-    private final int margin;
+    private final int padding;
+    private int margin;
     private Bitmap mBitmap;
     private int mColor;
     private Configuration configuration;
@@ -69,6 +66,7 @@ public class FloatingActionButton extends View {
      * The FAB button's Y position when it is hidden.
      */
     private float mYHidden = -1;
+    private float mInset = -1;
 
     public FloatingActionButton(Context context) {
         this(context, null);
@@ -92,9 +90,11 @@ public class FloatingActionButton extends View {
         TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);
         this.gravity = a.getInt(0, Gravity.NO_GRAVITY);
         if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
-            this.margin = a.getDimensionPixelSize(2, 0) + a.getDimensionPixelSize(4, 0);
+            this.padding = a.getDimensionPixelSize(4, 0);
+            this.margin = a.getDimensionPixelSize(2, 0) + padding;
         } else {
-            this.margin = a.getDimensionPixelSize(1, 0) + a.getDimensionPixelSize(3, 0);
+            this.padding = a.getDimensionPixelSize(3, 0);
+            this.margin = a.getDimensionPixelSize(1, 0) + padding;
         }
         a.recycle();
 
@@ -154,15 +154,18 @@ public class FloatingActionButton extends View {
         if (0 != (changed & (ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_ORIENTATION | ActivityInfo.CONFIG_SCREEN_LAYOUT | ActivityInfo.CONFIG_SCREEN_SIZE))) {
             updateHiddenPos();
             mYDisplayed = -1;
+            mInset = -1;
         }
-        configuration = newConfig;
+        configuration = new Configuration(newConfig);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        configuration = getContext().getResources().getConfiguration();
+        configuration = new Configuration(getContext().getResources().getConfiguration());
         updateHiddenPos();
+        mYDisplayed = -1;
+        mInset = -1;
     }
 
     private void updateHiddenPos() {
@@ -185,6 +188,25 @@ public class FloatingActionButton extends View {
         }
 
         if (DEBUG) Log.d(LOG_TAG, "update mYHidden ("+(mHidden?"hidden":"shown")+") = "+mYHidden);
+    }
+
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    private void updateShownPosition() {
+        if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
+            mYDisplayed = getHeight() + margin;
+        } else {
+            mYDisplayed = mYHidden - getHeight() - margin;
+        }
+
+        if (DEBUG) Log.d(LOG_TAG, "update mYDisplayed ("+(mHidden?"hidden":"shown")+") = "+mYDisplayed+ " is at "+ViewHelper.getY(this)+" height = "+getHeight()+ " padding="+getPaddingBottom()+" statusHeight="+getStatusBarHeight());
     }
 
     @Override
@@ -228,17 +250,11 @@ public class FloatingActionButton extends View {
 
         // Store the FAB button's displayed Y position if we are not already aware of it
         if (mYDisplayed == -1) {
-            if (mHidden) {
-                if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
-                    mYDisplayed = getHeight() + margin;
-                } else {
-                    mYDisplayed = mYHidden - getHeight() - margin;
-                }
-            } else {
-                mYDisplayed = ViewHelper.getY(this);
-            }
-
-            if (DEBUG) Log.d(LOG_TAG, "update mYDisplayed ("+(mHidden?"hidden":"shown")+") = "+mYDisplayed+ " is at "+ViewHelper.getY(this)+" height = "+getHeight()+ " padding="+getPaddingBottom());
+            updateShownPosition();
+        }
+        if (mInset == -1) {
+            mInset = mYDisplayed - ViewHelper.getY(this);
+            if (DEBUG) Log.d(LOG_TAG, "update mInset="+mInset+" mYDisplayed="+mYDisplayed);
         }
     }
 
@@ -277,10 +293,11 @@ public class FloatingActionButton extends View {
             // Store the new hidden state
             mHidden = hide;
 
-            if (DEBUG) Log.d(LOG_TAG, "scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? mYHidden : mYDisplayed));
+            if (DEBUG) Log.d(LOG_TAG, "scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? mYHidden : (mYDisplayed - mInset)));
 
             // Animate the FAB to it's new Y position
-            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : mYDisplayed).setDuration(duration);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : (mYDisplayed - mInset));
+            animator.setDuration(duration);
             animator.setInterpolator(hide ? hideInterpolator : showInterpolator);
             animator.start();
 
@@ -309,5 +326,32 @@ public class FloatingActionButton extends View {
 
     public int getShowHideDuration() {
         return duration;
+    }
+
+    public void setShowMargin(int showMargin) {
+        if (margin != showMargin + padding) {
+            margin = showMargin + padding;
+
+            if (mYDisplayed != -1) {
+                updateShownPosition();
+
+                if (!mHidden) {
+                    // move the item to the new mYDisplayed value
+                    ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mYDisplayed - mInset).setDuration(0);
+                    animator.start();
+                }
+            } else {
+                ViewGroup.LayoutParams layoutParams = getLayoutParams();
+                if (layoutParams instanceof RelativeLayout.LayoutParams) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) layoutParams;
+                    if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
+                        params.topMargin = showMargin;
+                    } else {
+                        params.bottomMargin = showMargin;
+                    }
+                    setLayoutParams(params);
+                }
+            }
+        }
     }
 }
