@@ -3,4 +3,11 @@
     <dimen name="fab_default_elevation">7.0dp</dimen>
     <dimen name="fab_default_elevationPressed">3.0dp</dimen>
     <integer name="fab_default_duration">400</integer>
+
+    <dimen name="fab_default_margin_large">11dp</dimen>
+    <dimen name="fab_default_margin_medium">12dp</dimen>
+
+    <dimen name="fab_default_size_large">66dp</dimen>
+    <dimen name="fab_default_size_medium">49dp</dimen>
+
 </resources>

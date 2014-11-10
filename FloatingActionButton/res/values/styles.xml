@@ -2,10 +2,10 @@
 <resources>
     <!-- Dimensions according to the Material guidelines http://www.google.com/design/spec/patterns/promoted-actions.html#promoted-actions-floating-action-button  -->
     <style name="FABLarge">
-        <item name="android:layout_width">66dip</item>
-        <item name="android:layout_height">66dip</item>
-        <item name="android:layout_marginBottom">11dp</item>
-        <item name="android:layout_marginRight">11dp</item>
+        <item name="android:layout_width">@dimen/fab_default_size_large</item>
+        <item name="android:layout_height">@dimen/fab_default_size_large</item>
+        <item name="android:layout_marginBottom">@dimen/fab_default_margin_large</item>
+        <item name="android:layout_marginRight">@dimen/fab_default_margin_large</item>
         <item name="fab_elevation">@dimen/fab_default_elevation</item>
         <item name="fab_elevationPressed">@dimen/fab_default_elevationPressed</item>
         <item name="fab_duration">@integer/fab_default_duration</item>
@@ -13,10 +13,10 @@
 
     <!-- Dimensions according to the Material guidelines http://www.google.com/design/spec/patterns/promoted-actions.html#promoted-actions-floating-action-button  -->
     <style name="FABMedium">
-        <item name="android:layout_width">49dip</item>
-        <item name="android:layout_height">49dip</item>
-        <item name="android:layout_marginBottom">12dp</item>
-        <item name="android:layout_marginRight">12dp</item>
+        <item name="android:layout_width">@dimen/fab_default_size_medium</item>
+        <item name="android:layout_height">@dimen/fab_default_size_medium</item>
+        <item name="android:layout_marginBottom">@dimen/fab_default_margin_medium</item>
+        <item name="android:layout_marginRight">@dimen/fab_default_margin_medium</item>
         <item name="fab_elevation">@dimen/fab_default_elevation</item>
         <item name="fab_elevationPressed">@dimen/fab_default_elevationPressed</item>
         <item name="fab_duration">@integer/fab_default_duration</item>
