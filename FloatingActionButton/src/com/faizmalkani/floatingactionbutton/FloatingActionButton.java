@@ -36,7 +36,7 @@ import com.nineoldandroids.view.ViewHelper;
 public class FloatingActionButton extends View {
 
     private static final boolean DEBUG = false;
-    private static final String LOG_TAG = "FAB";
+    private static final String LOG_TAG = "FloatingButton";
 
     private static final int Z_TRANSLATION_DURATION = 100;
     private static final float SHADOW_COEF_NORMAL = 0.9f;
