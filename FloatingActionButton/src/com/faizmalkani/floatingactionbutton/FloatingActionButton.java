@@ -66,7 +66,7 @@ public class FloatingActionButton extends View {
      * The FAB button's Y position when it is hidden.
      */
     private float mYHidden = -1;
-    private float mInset = -1;
+    private Float mInset = null;
 
     public FloatingActionButton(Context context) {
         this(context, null);
@@ -154,7 +154,7 @@ public class FloatingActionButton extends View {
         if (0 != (changed & (ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_ORIENTATION | ActivityInfo.CONFIG_SCREEN_LAYOUT | ActivityInfo.CONFIG_SCREEN_SIZE))) {
             updateHiddenPos();
             mYDisplayed = -1;
-            mInset = -1;
+            mInset = null;
         }
         configuration = new Configuration(newConfig);
     }
@@ -165,7 +165,7 @@ public class FloatingActionButton extends View {
         configuration = new Configuration(getContext().getResources().getConfiguration());
         updateHiddenPos();
         mYDisplayed = -1;
-        mInset = -1;
+        mInset = null;
     }
 
     private void updateHiddenPos() {
@@ -252,7 +252,7 @@ public class FloatingActionButton extends View {
         if (mYDisplayed == -1) {
             updateShownPosition();
         }
-        if (mInset == -1) {
+        if (mInset == null) {
             mInset = mYDisplayed - ViewHelper.getY(this);
             if (DEBUG) Log.d(LOG_TAG, "update mInset="+mInset+" mYDisplayed="+mYDisplayed);
         }
