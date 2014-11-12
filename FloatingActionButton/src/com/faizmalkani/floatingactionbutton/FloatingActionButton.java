@@ -151,18 +151,18 @@ public class FloatingActionButton extends View {
         super.onConfigurationChanged(newConfig);
 
         int changed = configuration==null ? ActivityInfo.CONFIG_ORIENTATION : configuration.diff(newConfig);
+        if (DEBUG) Log.d(LOG_TAG, "onConfigurationChanged from "+configuration+" to "+newConfig+" changed="+changed);
         if (0 != (changed & (ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_ORIENTATION | ActivityInfo.CONFIG_SCREEN_LAYOUT | ActivityInfo.CONFIG_SCREEN_SIZE))) {
             updateHiddenPos();
             mYDisplayed = -1;
             mInset = null;
         }
-        configuration = new Configuration(newConfig);
+        configuration = newConfig;
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        configuration = new Configuration(getContext().getResources().getConfiguration());
         updateHiddenPos();
         mYDisplayed = -1;
         mInset = null;
@@ -172,7 +172,7 @@ public class FloatingActionButton extends View {
         if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
             mYHidden = 0;
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (configuration!=null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 mYHidden = ((configuration.screenHeightDp) * configuration.densityDpi) / 160;
             } else {
                 WindowManager mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
