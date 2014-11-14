@@ -1,5 +1,6 @@
 package com.faizmalkani.floatingactionbutton;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -62,10 +63,6 @@ public class FloatingActionButton extends View {
      * The FAB button's Y position when it is displayed.
      */
     private float mYDisplayed = -1;
-    /**
-     * The FAB button's Y position when it is hidden.
-     */
-    private float mYHidden = -1;
     private Float mInset = null;
 
     public FloatingActionButton(Context context) {
@@ -153,7 +150,6 @@ public class FloatingActionButton extends View {
         int changed = configuration==null ? ActivityInfo.CONFIG_ORIENTATION : configuration.diff(newConfig);
         if (DEBUG) Log.d(LOG_TAG, "onConfigurationChanged from "+configuration+" to "+newConfig+" changed="+changed);
         if (0 != (changed & (ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_ORIENTATION | ActivityInfo.CONFIG_SCREEN_LAYOUT | ActivityInfo.CONFIG_SCREEN_SIZE))) {
-            updateHiddenPos();
             mYDisplayed = -1;
             mInset = null;
         }
@@ -163,31 +159,30 @@ public class FloatingActionButton extends View {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        updateHiddenPos();
         mYDisplayed = -1;
         mInset = null;
     }
 
-    private void updateHiddenPos() {
+    @SuppressLint("InlinedApi")
+    private int getHiddenPos() {
         if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
-            mYHidden = 0;
-        } else {
-            if (configuration!=null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                mYHidden = ((configuration.screenHeightDp) * configuration.densityDpi) / 160;
+            return 0;
+        }
+
+        Configuration configuration = getContext().getResources().getConfiguration();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            WindowManager mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            Display display = mWindowManager.getDefaultDisplay();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2) {
+                return display.getHeight();
             } else {
-                WindowManager mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-                Display display = mWindowManager.getDefaultDisplay();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-                    Point size = new Point();
-                    display.getSize(size);
-                    mYHidden = size.y;
-                } else {
-                    mYHidden = display.getHeight();
-                }
+                Point size = new Point();
+                display.getSize(size);
+                return size.y;
             }
         }
 
-        if (DEBUG) Log.d(LOG_TAG, "update mYHidden ("+(mHidden?"hidden":"shown")+") = "+mYHidden);
+        return ((configuration.screenHeightDp) * configuration.densityDpi) / 160;
     }
 
     private int getStatusBarHeight() {
@@ -203,7 +198,7 @@ public class FloatingActionButton extends View {
         if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
             mYDisplayed = getHeight() + margin;
         } else {
-            mYDisplayed = mYHidden - getHeight() - margin;
+            mYDisplayed = getHiddenPos() - getHeight() - margin;
         }
 
         if (DEBUG) Log.d(LOG_TAG, "update mYDisplayed ("+(mHidden?"hidden":"shown")+") = "+mYDisplayed+ " is at "+ViewHelper.getY(this)+" height = "+getHeight()+ " padding="+getPaddingBottom()+" statusHeight="+getStatusBarHeight());
@@ -293,10 +288,10 @@ public class FloatingActionButton extends View {
             // Store the new hidden state
             mHidden = hide;
 
-            if (DEBUG) Log.d(LOG_TAG, "scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? mYHidden : (mYDisplayed - mInset)));
+            if (DEBUG) Log.d(LOG_TAG, "scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? getHiddenPos() : (mYDisplayed - mInset)));
 
             // Animate the FAB to it's new Y position
-            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? mYHidden : (mYDisplayed - mInset));
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? getHiddenPos() : (mYDisplayed - mInset));
             animator.setDuration(duration);
             animator.setInterpolator(hide ? hideInterpolator : showInterpolator);
             animator.start();
