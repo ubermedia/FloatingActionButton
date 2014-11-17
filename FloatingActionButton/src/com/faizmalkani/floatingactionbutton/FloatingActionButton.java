@@ -249,6 +249,8 @@ public class FloatingActionButton extends View {
         }
         if (mInset == null) {
             mInset = mYDisplayed - ViewHelper.getY(this);
+            if (Math.abs(mInset) <= 1.0f)
+                mInset = 0.0f;
             if (DEBUG) LogManager.getLogger().d("update mInset="+mInset+" mYDisplayed="+mYDisplayed);
         }
     }
