@@ -17,7 +17,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -31,13 +30,14 @@ import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 
+import com.faizmalkani.floatingactionbutton.log.LogManager;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
 public class FloatingActionButton extends View {
 
-    private static final boolean DEBUG = false;
-    private static final String LOG_TAG = "FloatingButton";
+    public static final boolean DEBUG = true;
+    public static final String LOG_TAG = "FloatingButton";
 
     private static final int Z_TRANSLATION_DURATION = 100;
     private static final float SHADOW_COEF_NORMAL = 0.9f;
@@ -140,7 +140,7 @@ public class FloatingActionButton extends View {
 
         a.recycle();
 
-        if (DEBUG) Log.d(LOG_TAG, "init to "+(mHidden?"hidden":"shown"));
+        if (DEBUG) LogManager.getLogger().d("init to "+(mHidden?"hidden":"shown"));
     }
 
     @Override
@@ -148,7 +148,7 @@ public class FloatingActionButton extends View {
         super.onConfigurationChanged(newConfig);
 
         int changed = configuration==null ? ActivityInfo.CONFIG_ORIENTATION : configuration.diff(newConfig);
-        if (DEBUG) Log.d(LOG_TAG, "onConfigurationChanged from "+configuration+" to "+newConfig+" changed="+changed);
+        if (DEBUG) LogManager.getLogger().d("onConfigurationChanged from "+configuration+" to "+newConfig+" changed="+changed);
         if (0 != (changed & (ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_ORIENTATION | ActivityInfo.CONFIG_SCREEN_LAYOUT | ActivityInfo.CONFIG_SCREEN_SIZE))) {
             mYDisplayed = -1;
             mInset = null;
@@ -201,7 +201,7 @@ public class FloatingActionButton extends View {
             mYDisplayed = getHiddenPos() - getHeight() - margin;
         }
 
-        if (DEBUG) Log.d(LOG_TAG, "update mYDisplayed ("+(mHidden?"hidden":"shown")+") = "+mYDisplayed+ " is at "+ViewHelper.getY(this)+" height = "+getHeight()+ " padding="+getPaddingBottom()+" statusHeight="+getStatusBarHeight());
+        if (DEBUG) LogManager.getLogger().d("update mYDisplayed ("+(mHidden?"hidden":"shown")+") = "+mYDisplayed+ " is at "+ViewHelper.getY(this)+" height = "+getHeight()+ " padding="+getPaddingBottom()+" statusHeight="+getStatusBarHeight());
     }
 
     @Override
@@ -249,7 +249,7 @@ public class FloatingActionButton extends View {
         }
         if (mInset == null) {
             mInset = mYDisplayed - ViewHelper.getY(this);
-            if (DEBUG) Log.d(LOG_TAG, "update mInset="+mInset+" mYDisplayed="+mYDisplayed);
+            if (DEBUG) LogManager.getLogger().d("update mInset="+mInset+" mYDisplayed="+mYDisplayed);
         }
     }
 
@@ -288,7 +288,7 @@ public class FloatingActionButton extends View {
             // Store the new hidden state
             mHidden = hide;
 
-            if (DEBUG) Log.d(LOG_TAG, "scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? getHiddenPos() : (mYDisplayed - mInset)));
+            if (DEBUG) LogManager.getLogger().d("scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? getHiddenPos() : (mYDisplayed - mInset)));
 
             // Animate the FAB to it's new Y position
             ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? getHiddenPos() : (mYDisplayed - mInset));
