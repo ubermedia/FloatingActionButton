@@ -247,7 +247,7 @@ public class FloatingActionButton extends View {
         if (mYDisplayed == -1) {
             updateShownPosition();
         }
-        if (mInset == null) {
+        if (mInset == null && !mHidden) {
             mInset = mYDisplayed - ViewHelper.getY(this);
             if (Math.abs(mInset) <= 1.0f)
                 mInset = 0.0f;
@@ -293,7 +293,7 @@ public class FloatingActionButton extends View {
             if (DEBUG) LogManager.getLogger().d("scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? getHiddenPos() : (mYDisplayed - mInset)));
 
             // Animate the FAB to it's new Y position
-            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? getHiddenPos() : (mYDisplayed - mInset));
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? getHiddenPos() : (mYDisplayed - (mInset == null ? 0 : mInset)));
             animator.setDuration(duration);
             animator.setInterpolator(hide ? hideInterpolator : showInterpolator);
             animator.start();
@@ -334,7 +334,7 @@ public class FloatingActionButton extends View {
 
                 if (!mHidden) {
                     // move the item to the new mYDisplayed value
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mYDisplayed - mInset).setDuration(0);
+                    ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mYDisplayed - (mInset == null ? 0 : mInset)).setDuration(0);
                     animator.start();
                 }
             } else {
