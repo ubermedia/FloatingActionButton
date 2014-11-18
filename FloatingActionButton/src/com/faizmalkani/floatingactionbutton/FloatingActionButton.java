@@ -64,6 +64,7 @@ public class FloatingActionButton extends View {
      */
     private float mYDisplayed = -1;
     private Float mInset = null;
+    private Integer mTop;
 
     public FloatingActionButton(Context context) {
         this(context, null);
@@ -166,7 +167,7 @@ public class FloatingActionButton extends View {
     @SuppressLint("InlinedApi")
     private int getHiddenPos() {
         if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP) {
-            return 0;
+            return 0 - getHeight();
         }
 
         Configuration configuration = getContext().getResources().getConfiguration();
@@ -252,6 +253,18 @@ public class FloatingActionButton extends View {
             if (Math.abs(mInset) <= 1.0f)
                 mInset = 0.0f;
             if (DEBUG) LogManager.getLogger().d("update mInset="+mInset+" mYDisplayed="+mYDisplayed);
+        }
+
+        if (null==mTop || mTop!=getTop()) {
+            if (DEBUG) LogManager.getLogger().v("top Changed from "+mTop+" to "+getTop());
+            mTop = getTop();
+
+            if (mHidden) {
+                // hide better
+                ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", getHiddenPos());
+                animator.setDuration(0);
+                animator.start();
+            }
         }
     }
 
