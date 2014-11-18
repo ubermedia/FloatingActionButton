@@ -327,6 +327,8 @@ public class FloatingActionButton extends View {
 
     public void setShowMargin(int showMargin) {
         if (margin != showMargin + padding) {
+            if (DEBUG) LogManager.getLogger().d("setShowMargin to " + showMargin + " from " + (margin - padding));
+
             margin = showMargin + padding;
 
             if (mYDisplayed != -1) {
