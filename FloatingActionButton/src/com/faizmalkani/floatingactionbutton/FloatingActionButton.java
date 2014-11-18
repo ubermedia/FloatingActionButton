@@ -303,10 +303,10 @@ public class FloatingActionButton extends View {
             // Store the new hidden state
             mHidden = hide;
 
-            if (DEBUG) LogManager.getLogger().d("scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? getHiddenPos() : (mYDisplayed - (mInset == null ? 0 : mInset))));
+            if (DEBUG) LogManager.getLogger().d("scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? getHiddenPos() : (mYDisplayed - (mInset == null ? 0 : mInset)))+ " top="+getTop());
 
             // Animate the FAB to it's new Y position
-            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? getHiddenPos() : (mYDisplayed - (mInset == null ? 0 : mInset)));
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? getHiddenPos() : getTop() /*(mYDisplayed - (mInset == null ? 0 : mInset))*/);
             animator.setDuration(duration);
             animator.setInterpolator(hide ? hideInterpolator : showInterpolator);
             animator.start();
