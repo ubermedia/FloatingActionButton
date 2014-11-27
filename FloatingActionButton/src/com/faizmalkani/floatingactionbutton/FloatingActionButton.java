@@ -264,7 +264,7 @@ public class FloatingActionButton extends View {
 			            TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
 			            TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
 			            TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
-			            TranslateAnimation.ABSOLUTE, getHiddenPos()
+			            TranslateAnimation.RELATIVE_TO_SELF, (getHiddenPos() - getYPosition()) / getHeight()
 	            );
                 animator.setDuration(0);
                 startAnimation(animator);
@@ -324,13 +324,13 @@ public class FloatingActionButton extends View {
                         TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
                         TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
                         TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
-                        TranslateAnimation.ABSOLUTE, getHiddenPos()
+                        TranslateAnimation.RELATIVE_TO_SELF, (getHiddenPos() - getYPosition()) / getHeight()
                 );
             } else {
                 animator = new TranslateAnimation(
                         TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
                         TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
-                        TranslateAnimation.ABSOLUTE, getHiddenPos(),
+                        TranslateAnimation.RELATIVE_TO_SELF, (getHiddenPos() - getYPosition()) / getHeight(),
                         TranslateAnimation.RELATIVE_TO_SELF, 0.0f
                 );
             }
