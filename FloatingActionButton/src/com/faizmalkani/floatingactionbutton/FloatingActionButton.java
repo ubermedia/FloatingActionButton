@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 
@@ -306,10 +307,27 @@ public class FloatingActionButton extends View {
             if (DEBUG) LogManager.getLogger().d("scroll to " + (mHidden ? "hide" : "show") + " = " + (mHidden ? getHiddenPos() : (mYDisplayed - (mInset == null ? 0 : mInset)))+ " top="+getTop());
 
             // Animate the FAB to it's new Y position
-            ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mHidden ? getHiddenPos() : getTop() /*(mYDisplayed - (mInset == null ? 0 : mInset))*/);
+            TranslateAnimation animator;
+            if (mHidden) {
+                animator = new TranslateAnimation(
+                        TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+                        TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+                        TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
+                        TranslateAnimation.ABSOLUTE, getHiddenPos()
+                );
+            } else {
+                animator = new TranslateAnimation(
+                        TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+                        TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+                        TranslateAnimation.ABSOLUTE, getHiddenPos(),
+                        TranslateAnimation.RELATIVE_TO_SELF, 0.0f
+                );
+            }
+
             animator.setDuration(duration);
             animator.setInterpolator(hide ? hideInterpolator : showInterpolator);
-            animator.start();
+            animator.setFillAfter(true);
+            startAnimation(animator);
 
             return true;
         }
