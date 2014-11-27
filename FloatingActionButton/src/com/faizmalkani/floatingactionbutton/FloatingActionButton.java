@@ -32,8 +32,6 @@ import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 
 import com.faizmalkani.floatingactionbutton.log.LogManager;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.view.ViewHelper;
 
 public class FloatingActionButton extends View {
 
@@ -203,7 +201,7 @@ public class FloatingActionButton extends View {
             mYDisplayed = getHiddenPos() - getHeight() - margin;
         }
 
-        if (DEBUG) LogManager.getLogger().d("update mYDisplayed ("+(mHidden?"hidden":"shown")+") = "+mYDisplayed+ " is at "+ViewHelper.getY(this)+" height = "+getHeight()+ " padding="+getPaddingBottom()+" statusHeight="+getStatusBarHeight());
+        if (DEBUG) LogManager.getLogger().d("update mYDisplayed ("+(mHidden?"hidden":"shown")+") = "+mYDisplayed+ " is at "+getYPosition()+" height = "+getHeight()+ " padding="+getPaddingBottom()+" statusHeight="+getStatusBarHeight());
     }
 
     @Override
@@ -250,7 +248,7 @@ public class FloatingActionButton extends View {
             updateShownPosition();
         }
         if (mInset == null && !mHidden) {
-            mInset = mYDisplayed - ViewHelper.getY(this);
+            mInset = mYDisplayed - getYPosition();
             if (Math.abs(mInset) <= 1.0f)
                 mInset = 0.0f;
             if (DEBUG) LogManager.getLogger().d("update mInset="+mInset+" mYDisplayed="+mYDisplayed);
@@ -262,12 +260,25 @@ public class FloatingActionButton extends View {
 
             if (mHidden) {
                 // hide better
-                ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", getHiddenPos());
+	            TranslateAnimation animator = new TranslateAnimation(
+			            TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+			            TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+			            TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
+			            TranslateAnimation.ABSOLUTE, getHiddenPos()
+	            );
                 animator.setDuration(0);
-                animator.start();
+                startAnimation(animator);
             }
         }
     }
+
+	private float getYPosition() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			return getTop();
+		}
+
+		return getY();
+	}
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
@@ -308,7 +319,7 @@ public class FloatingActionButton extends View {
 
             // Animate the FAB to it's new Y position
             TranslateAnimation animator;
-            if (mHidden) {
+            if (hide) {
                 animator = new TranslateAnimation(
                         TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
                         TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
@@ -367,8 +378,14 @@ public class FloatingActionButton extends View {
 
                 if (!mHidden) {
                     // move the item to the new mYDisplayed value
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(this, "y", mYDisplayed - (mInset == null ? 0 : mInset)).setDuration(0);
-                    animator.start();
+	                TranslateAnimation animator = new TranslateAnimation(
+			                TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+			                TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+			                TranslateAnimation.ABSOLUTE, getHiddenPos(),
+			                TranslateAnimation.RELATIVE_TO_SELF, mYDisplayed - (mInset == null ? 0 : mInset)
+	                );
+	                animator.setDuration(0);
+                    startAnimation(animator);
                 }
             } else {
                 ViewGroup.LayoutParams layoutParams = getLayoutParams();
