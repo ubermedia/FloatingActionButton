@@ -35,7 +35,7 @@ import com.faizmalkani.floatingactionbutton.log.LogManager;
 
 public class FloatingActionButton extends View {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final String LOG_TAG = "FloatingButton";
 
     private static final int Z_TRANSLATION_DURATION = 100;
