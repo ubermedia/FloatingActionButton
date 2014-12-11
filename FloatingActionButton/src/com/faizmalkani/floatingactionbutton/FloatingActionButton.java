@@ -291,13 +291,13 @@ public class FloatingActionButton extends View {
         mButtonPaint.setColor(color);
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 mButtonPaint.setShadowLayer(SHADOW_COEF_PRESSED * elevation, dx, SHADOW_COEF_PRESSED * dy, shadowColor);
             } else {
                 animate().translationZ(pressedElevation - elevation).setDuration(Z_TRANSLATION_DURATION);
             }
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 mButtonPaint.setShadowLayer(SHADOW_COEF_NORMAL * elevation, dx, SHADOW_COEF_NORMAL * dy, shadowColor);
             } else {
                 animate().translationZ(0).setDuration(Z_TRANSLATION_DURATION);
