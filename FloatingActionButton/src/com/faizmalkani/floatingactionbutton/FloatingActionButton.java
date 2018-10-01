@@ -401,4 +401,8 @@ public class FloatingActionButton extends View {
             }
         }
     }
+
+    public void setHidden(boolean value) {
+        mHidden = value;
+    }
 }
