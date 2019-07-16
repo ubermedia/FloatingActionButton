@@ -16,7 +16,7 @@
 
 package com.faizmalkani.floatingactionbutton;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AbsListView;
